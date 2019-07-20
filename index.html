@@ -4,6 +4,7 @@
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xls/0.7.4-a/xls.core.min.js"></script> 
+    <script src="https://unpkg.com/xlsx@0.11.18/dist/xlsx.full.min.js"></script>
     <style>
         th,td{
             padding:10px;
@@ -13,7 +14,7 @@
         }
     </style>
     <script>
-        function nextBlank(N, Obj, nextId){
+    function nextBlank(N, Obj, nextId){
             if(document.getElementById(Obj).value.length == N){
                 document.getElementById(nextId).focus();
             }
@@ -44,46 +45,6 @@
             form.phonenum3.focus();
             return;
         }
-        getNum();
-    }
-    function getNum(){
-        var url = "/testt.xlsx";
-        var oReq = new XMLHttpRequest();
-        oReq.open("GET", url, true);
-        oReq.responseType = "arraybuffer";
-
-        oReq.onload = function (e) {
-        var arraybuffer = oReq.response;
-
-        /* convert data to binary string */
-        var data = new Uint8Array(arraybuffer);
-        var arr = new Array();
-        for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
-        var bstr = arr.join("");
-
-        /* Call XLSX */
-        var workbook = XLSX.read(bstr, {
-            type: "binary"
-        });
-
-        /* DO SOMETHING WITH workbook HERE */
-
-        var first_sheet_name = workbook.SheetNames[0];
-        var address_of_cell = 'A1';
-
-        /* Get worksheet */
-        var worksheet = workbook.Sheets[first_sheet_name];
-
-        /* Find desired cell */
-        var desired_cell = worksheet[address_of_cell];
-
-        /* Get the value */
-        var desired_value = desired_cell.v;
-
-        $('.asdf').append('<div>'+desired_value+'</div>');
-    }
-
-        oReq.send();
     }
     </script>
 </head>
@@ -108,4 +69,42 @@
     </form>
     <div class="asdf"></div>
     <img src="http://cfile219.uf.daum.net/image/9901BC475D330A9C201818"/>
+    <br>
+<input type="hidden" id="selfile" value="/testt.xlsx">
+<button id="btn1" value="Get Excel Data" onclick="getExcelFile()">Click</button>
+<div id="grid">
+ 
+</div>
 </body>
+</html>
+ 
+<script>
+    function getExcelFile() {
+        const XLSX = require('xlsx');
+        const fObj = XLSX.readFile('testt.xlsx');
+        console.log(fObj.value);
+        if(fObj.value === '') {
+            alert('Please Select File');
+        } else {
+            const selectedFile = fObj.files[0];
+            // console.log(selectedFile.path);
+            // console.log('Name :' + selectedFile.name + '/ Size : ' + selectedFile.size);
+ 
+            var reader = new FileReader();
+ 
+            reader.onload = function(evt) {
+                if(evt.target.readyState == FileReader.DONE) {
+                    var data = evt.target.result;
+                    data = new Uint8Array(data);
+ 
+                    // call 'xlsx' to read the file
+                    var workbook = XLSX.read(data, {type: 'array'});
+                    // console.log(workbook);
+                    var toHtml = XLSX.utils.sheet_to_html(workbook.Sheets['Sheet1'], {header:1});
+                    document.getElementById('grid').innerHTML = toHtml;
+                }
+            };
+            reader.readAsArrayBuffer(selectedFile);
+        }
+    }
+</script>
