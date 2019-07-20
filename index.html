@@ -1,9 +1,38 @@
 <meta charset="utf-8">
-<h1>테스트</h1>
-<img src="https://postfiles.pstatic.net/MjAxODEyMTlfMjM2/MDAxNTQ1MjEyNzgyODQy.tvNhxRYNnPKiYNFJc0yBh3TS_hyLSCB1coeJG7uqlH4g.Yl8hEfNrQDvRaMkEpoxFWlO7cx1jAbHjkGoy7zRcl4Qg.JPEG.qldmdtnls/1544008498105-8.jpg?type=w1">
-<table border="1" style="border-collapse: collapse;">
-    <tr>
-        <th style="padding: 10px;">test</th>
-        <td style="padding: 10px;">테스트</td>
-    </tr>
-</table>
+<head>
+    <style>
+        th,td{
+            padding:10px;
+        }
+        .phonenum{
+            width: 40px;
+        }
+    </style>
+    <script>
+        function nextBlank(N, Obj, nextId){
+            if(document.getElementById(Obj).value.length == N){
+                document.getElementById(nextId).focus();
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>테스트</h1>
+    <form onsubmit="" method="POST">
+    <table>
+        <tr>
+            <th>이름</th>
+            <td><input type="text" name="name" placeholder="이름을 입력하세요."></td>
+        </tr>
+        <tr>
+            <th>휴대폰 번호</th>
+            <td><input type="text" name="phonenum1" class="phonenum" id="pN1" onkeyup="nextBlank(3,this.id,'pN2');"> <input type="text" name="phonenum2" class="phonenum" id="pN2" onkeyup="nextBlank(4,this.id,'pN3');"> <input type="text" name="phonenum3" class="phonenum" id="pN3"></td>
+        </tr>
+        <tr>
+            <th></th>
+            <td><button type="submit">등기번호 가져오기</button> <input type="reset" value="리셋"></td>
+        </tr>
+    </table>
+    </form>
+    <img src="https://postfiles.pstatic.net/MjAxODEyMTlfMjcg/MDAxNTQ1MjEyODA2NzI5.qlLMVdE3o0pEGq2ou9f7PAj4alzBsgduzoDNizsVatEg.V43fEE-9m8BPZDRr3q1-OgJxgVZYr6WDd3ltOKUsyDEg.JPEG.qldmdtnls/1542766129415.jpg?type=w1"/>
+</body>
