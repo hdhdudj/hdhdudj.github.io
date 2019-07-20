@@ -1,5 +1,9 @@
 <meta charset="utf-8">
 <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.7.7/xlsx.core.min.js"></script>  
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xls/0.7.4-a/xls.core.min.js"></script> 
     <style>
         th,td{
             padding:10px;
@@ -14,11 +18,43 @@
                 document.getElementById(nextId).focus();
             }
         }
+        function formCheck(form) {
+        form.name.value = form.name.value.trim();
+        if (form.name.value.length == 0) {
+            alert('이름을 입력해주세요.');
+            form.name.focus();
+            return;
+        }
+        
+        form.phonenum1.value = form.phonenum1.value.trim();
+        if (form.phonenum1.value.length == 0) {
+            alert('번호를 입력해주세요.');
+            form.phonenum1.focus();
+            return;
+        }
+        form.phonenum2.value = form.phonenum2.value.trim();
+        if (form.phonenum2.value.length == 0) {
+            alert('번호를 입력해주세요.');
+            form.phonenum2.focus();
+            return;
+        }
+        form.phonenum3.value = form.phonenum3.value.trim();
+        if (form.phonenum3.value.length == 0) {
+            alert('번호를 입력해주세요.');
+            form.phonenum3.focus();
+            return;
+        }
+        getNum();
+    }
+    function getNum(){
+        
+    }
     </script>
 </head>
 <body>
     <h1>테스트</h1>
-    <form onsubmit="" method="POST">
+    <a href="/testt.xlsx">테스트용 엑셀파일</a>
+    <form onsubmit="formCheck(this); return false;">
     <table>
         <tr>
             <th>이름</th>
@@ -34,5 +70,6 @@
         </tr>
     </table>
     </form>
+    <div class="asdf"></div>
     <img src="http://cfile219.uf.daum.net/image/9901BC475D330A9C201818"/>
 </body>
