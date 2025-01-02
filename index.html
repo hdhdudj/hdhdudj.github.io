@@ -31,7 +31,7 @@
             text-align: center;
         }
 
-        .input-page, .news-page {
+        .input-page, .news-list-page, .news-article-page {
             display: none;
         }
 
@@ -50,6 +50,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             background: #f9f9f9;
+            cursor: pointer;
         }
 
         .btn {
@@ -67,6 +68,13 @@
         .btn:hover {
             background: #0056b3;
         }
+
+        .news-content {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #f9f9f9;
+        }
     </style>
 </head>
 <body>
@@ -78,22 +86,33 @@
             <button class="btn" id="submitBtn">기사 추가</button>
         </div>
 
-        <!-- News Page -->
-        <div class="news-page" id="newsPage">
-            <h1>기사 보기</h1>
+        <!-- News List Page -->
+        <div class="news-list-page" id="newsListPage">
+            <h1>기사 목록</h1>
             <ul class="news-list" id="newsList"></ul>
             <button class="btn" id="editBtn">추가하기</button>
+        </div>
+
+        <!-- News Article Page -->
+        <div class="news-article-page" id="newsArticlePage">
+            <h1>기사</h1>
+            <div class="news-content" id="newsContent"></div>
+            <button class="btn" id="backBtn">목록으로</button>
         </div>
     </div>
 
     <script>
         const inputPage = document.getElementById('inputPage');
-        const newsPage = document.getElementById('newsPage');
+        const newsListPage = document.getElementById('newsListPage');
+        const newsArticlePage = document.getElementById('newsArticlePage');
+
         const textInput = document.getElementById('textInput');
         const newsList = document.getElementById('newsList');
+        const newsContent = document.getElementById('newsContent');
 
         const submitBtn = document.getElementById('submitBtn');
         const editBtn = document.getElementById('editBtn');
+        const backBtn = document.getElementById('backBtn');
 
         const MAX_NEWS = 10;
 
@@ -105,8 +124,18 @@
                 const li = document.createElement('li');
                 li.className = 'news-item';
                 li.textContent = `${index + 1}. ${news}`;
+                li.addEventListener('click', () => {
+                    showNewsArticle(news);
+                });
                 newsList.appendChild(li);
             });
+        }
+
+        function showNewsArticle(news) {
+            newsContent.textContent = news;
+
+            newsListPage.classList.remove('visible');
+            newsArticlePage.classList.add('visible');
         }
 
         submitBtn.addEventListener('click', () => {
@@ -126,7 +155,7 @@
                 loadNews();
 
                 inputPage.classList.remove('visible');
-                newsPage.classList.add('visible');
+                newsListPage.classList.add('visible');
             } else {
                 alert('문구를 입력해주세요.');
             }
@@ -134,7 +163,12 @@
 
         editBtn.addEventListener('click', () => {
             inputPage.classList.add('visible');
-            newsPage.classList.remove('visible');
+            newsListPage.classList.remove('visible');
+        });
+
+        backBtn.addEventListener('click', () => {
+            newsArticlePage.classList.remove('visible');
+            newsListPage.classList.add('visible');
         });
 
         // Initialize with saved news if available
@@ -142,7 +176,7 @@
 
         if (JSON.parse(localStorage.getItem('newsArray'))?.length) {
             inputPage.classList.remove('visible');
-            newsPage.classList.add('visible');
+            newsListPage.classList.add('visible');
         }
     </script>
 </body>
