@@ -132,7 +132,6 @@
         }
 
         function showNewsArticle(news, articleId) {
-            newsContent.textContent = news;
             history.pushState({ articleId }, '', `/${articleId}`);
 
             newsListPage.classList.remove('visible');
