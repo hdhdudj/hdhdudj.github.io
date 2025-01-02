@@ -133,7 +133,7 @@
 
         function showNewsArticle(news, articleId) {
             history.pushState({ articleId }, '', `/${articleId}`);
-
+            newsContent.textContent = news;
             newsListPage.classList.remove('visible');
             newsArticlePage.classList.add('visible');
         }
