@@ -1,110 +1,149 @@
-<meta charset="utf-8">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.7.7/xlsx.core.min.js"></script>  
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xls/0.7.4-a/xls.core.min.js"></script> 
-    <script src="https://unpkg.com/xlsx@0.11.18/dist/xlsx.full.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple News App</title>
     <style>
-        th,td{
-            padding:10px;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
         }
-        .phonenum{
-            width: 40px;
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .input-page, .news-page {
+            display: none;
+        }
+
+        .visible {
+            display: block;
+        }
+
+        .news-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .news-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #f9f9f9;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #0056b3;
         }
     </style>
-    <script>
-    function nextBlank(N, Obj, nextId){
-            if(document.getElementById(Obj).value.length == N){
-                document.getElementById(nextId).focus();
-            }
-        }
-        function formCheck(form) {
-        form.name.value = form.name.value.trim();
-        if (form.name.value.length == 0) {
-            alert('이름을 입력해주세요.');
-            form.name.focus();
-            return;
-        }
-        
-        form.phonenum1.value = form.phonenum1.value.trim();
-        if (form.phonenum1.value.length == 0) {
-            alert('번호를 입력해주세요.');
-            form.phonenum1.focus();
-            return;
-        }
-        form.phonenum2.value = form.phonenum2.value.trim();
-        if (form.phonenum2.value.length == 0) {
-            alert('번호를 입력해주세요.');
-            form.phonenum2.focus();
-            return;
-        }
-        form.phonenum3.value = form.phonenum3.value.trim();
-        if (form.phonenum3.value.length == 0) {
-            alert('번호를 입력해주세요.');
-            form.phonenum3.focus();
-            return;
-        }
-    }
-    </script>
 </head>
 <body>
-    <h1>테스트</h1>
-    <a href="/testt.xlsx">테스트용 엑셀파일</a>
-    <form onsubmit="formCheck(this); return false;">
-    <table>
-        <tr>
-            <th>이름</th>
-            <td><input type="text" name="name" placeholder="이름을 입력하세요."></td>
-        </tr>
-        <tr>
-            <th>휴대폰 번호</th>
-            <td><input type="text" name="phonenum1" class="phonenum" id="pN1" onkeyup="nextBlank(3,this.id,'pN2');"> <input type="text" name="phonenum2" class="phonenum" id="pN2" onkeyup="nextBlank(4,this.id,'pN3');"> <input type="text" name="phonenum3" class="phonenum" id="pN3"></td>
-        </tr>
-        <tr>
-            <th></th>
-            <td><button type="submit">등기번호 가져오기</button> <input type="reset" value="리셋"></td>
-        </tr>
-    </table>
-    </form>
-    <div class="asdf"></div>
-    <img src="http://cfile219.uf.daum.net/image/9901BC475D330A9C201818"/>
-    <br>
-<input type="hidden" id="selfile" value="/testt.xlsx">
-<button id="btn1" value="Get Excel Data" onclick="getExcelFile()">Click</button>
-<div id="grid">
- 
-</div>
+    <div class="container">
+        <!-- Input Page -->
+        <div class="input-page visible" id="inputPage">
+            <h1>문구 입력</h1>
+            <textarea id="textInput" rows="5" style="width: 100%;" placeholder="문구를 입력하세요..."></textarea>
+            <button class="btn" id="submitBtn">기사 추가</button>
+        </div>
+
+        <!-- News Page -->
+        <div class="news-page" id="newsPage">
+            <h1>기사 보기</h1>
+            <ul class="news-list" id="newsList"></ul>
+            <button class="btn" id="editBtn">추가하기</button>
+        </div>
+    </div>
+
+    <script>
+        const inputPage = document.getElementById('inputPage');
+        const newsPage = document.getElementById('newsPage');
+        const textInput = document.getElementById('textInput');
+        const newsList = document.getElementById('newsList');
+
+        const submitBtn = document.getElementById('submitBtn');
+        const editBtn = document.getElementById('editBtn');
+
+        const MAX_NEWS = 10;
+
+        function loadNews() {
+            const savedNews = JSON.parse(localStorage.getItem('newsArray')) || [];
+            newsList.innerHTML = '';
+
+            savedNews.forEach((news, index) => {
+                const li = document.createElement('li');
+                li.className = 'news-item';
+                li.textContent = `${index + 1}. ${news}`;
+                newsList.appendChild(li);
+            });
+        }
+
+        submitBtn.addEventListener('click', () => {
+            const text = textInput.value.trim();
+
+            if (text) {
+                let savedNews = JSON.parse(localStorage.getItem('newsArray')) || [];
+
+                if (savedNews.length >= MAX_NEWS) {
+                    savedNews.shift(); // Remove the oldest entry
+                }
+
+                savedNews.push(text);
+                localStorage.setItem('newsArray', JSON.stringify(savedNews));
+
+                textInput.value = '';
+                loadNews();
+
+                inputPage.classList.remove('visible');
+                newsPage.classList.add('visible');
+            } else {
+                alert('문구를 입력해주세요.');
+            }
+        });
+
+        editBtn.addEventListener('click', () => {
+            inputPage.classList.add('visible');
+            newsPage.classList.remove('visible');
+        });
+
+        // Initialize with saved news if available
+        loadNews();
+
+        if (JSON.parse(localStorage.getItem('newsArray'))?.length) {
+            inputPage.classList.remove('visible');
+            newsPage.classList.add('visible');
+        }
+    </script>
 </body>
 </html>
- 
-<script>
-    function getExcelFile() {
-        const XLSX = require('xlsx');
-        const fObj = XLSX.readFile('testt.xlsx');
-        console.log(fObj.value);
-        if(fObj.value === '') {
-            alert('Please Select File');
-        } else {
-            const selectedFile = fObj.files[0];
-            // console.log(selectedFile.path);
-            // console.log('Name :' + selectedFile.name + '/ Size : ' + selectedFile.size);
- 
-            var reader = new FileReader();
- 
-            reader.onload = function(evt) {
-                if(evt.target.readyState == FileReader.DONE) {
-                    var data = evt.target.result;
-                    data = new Uint8Array(data);
- 
-                    // call 'xlsx' to read the file
-                    var workbook = XLSX.read(data, {type: 'array'});
-                    // console.log(workbook);
-                    var toHtml = XLSX.utils.sheet_to_html(workbook.Sheets['Sheet1'], {header:1});
-                    document.getElementById('grid').innerHTML = toHtml;
-                }
-            };
-            reader.readAsArrayBuffer(selectedFile);
-        }
-    }
-</script>
