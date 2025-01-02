@@ -81,8 +81,9 @@
     <div class="container">
         <!-- Input Page -->
         <div class="input-page visible" id="inputPage">
-            <h1>문구 입력</h1>
-            <textarea id="textInput" rows="5" style="width: 100%;" placeholder="문구를 입력하세요..."></textarea>
+            <h1>기사 입력</h1>
+            <input id="titleInput" type="text" style="width: 100%;" placeholder="제목을 입력하세요..."><br><br>
+            <textarea id="contentInput" rows="5" style="width: 100%;" placeholder="내용을 입력하세요..."></textarea>
             <button class="btn" id="submitBtn">기사 추가</button>
         </div>
 
@@ -95,7 +96,7 @@
 
         <!-- News Article Page -->
         <div class="news-article-page" id="newsArticlePage">
-            <h1>기사</h1>
+            <h1 id="newsTitle"></h1>
             <div class="news-content" id="newsContent"></div>
             <button class="btn" id="backBtn">목록으로</button>
         </div>
@@ -106,8 +107,10 @@
         const newsListPage = document.getElementById('newsListPage');
         const newsArticlePage = document.getElementById('newsArticlePage');
 
-        const textInput = document.getElementById('textInput');
+        const titleInput = document.getElementById('titleInput');
+        const contentInput = document.getElementById('contentInput');
         const newsList = document.getElementById('newsList');
+        const newsTitle = document.getElementById('newsTitle');
         const newsContent = document.getElementById('newsContent');
 
         const submitBtn = document.getElementById('submitBtn');
@@ -123,7 +126,7 @@
             savedNews.forEach((news, index) => {
                 const li = document.createElement('li');
                 li.className = 'news-item';
-                li.textContent = `${index + 1}. ${news}`;
+                li.textContent = `${index + 1}. ${news.title}`;
                 li.addEventListener('click', () => {
                     showNewsArticle(news, index + 1);
                 });
@@ -132,8 +135,10 @@
         }
 
         function showNewsArticle(news, articleId) {
+            newsTitle.textContent = news.title;
+            newsContent.textContent = news.content;
             history.pushState({ articleId }, '', `/${articleId}`);
-            newsContent.textContent = news;
+
             newsListPage.classList.remove('visible');
             newsArticlePage.classList.add('visible');
         }
@@ -153,25 +158,27 @@
         });
 
         submitBtn.addEventListener('click', () => {
-            const text = textInput.value.trim();
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
 
-            if (text) {
+            if (title && content) {
                 let savedNews = JSON.parse(localStorage.getItem('newsArray')) || [];
 
                 if (savedNews.length >= MAX_NEWS) {
                     savedNews.shift(); // Remove the oldest entry
                 }
 
-                savedNews.push(text);
+                savedNews.push({ title, content });
                 localStorage.setItem('newsArray', JSON.stringify(savedNews));
 
-                textInput.value = '';
+                titleInput.value = '';
+                contentInput.value = '';
                 loadNews();
 
                 inputPage.classList.remove('visible');
                 newsListPage.classList.add('visible');
             } else {
-                alert('문구를 입력해주세요.');
+                alert('제목과 내용을 모두 입력해주세요.');
             }
         });
 
