@@ -50,6 +50,12 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             background: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .news-title {
             cursor: pointer;
         }
 
@@ -74,6 +80,19 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             background: #f9f9f9;
+        }
+
+        .action-btn {
+            margin-left: 10px;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            color: red;
+            font-weight: bold;
+        }
+
+        .action-btn:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -126,10 +145,31 @@
             savedNews.forEach((news, index) => {
                 const li = document.createElement('li');
                 li.className = 'news-item';
-                li.textContent = `${index + 1}. ${news.title}`;
-                li.addEventListener('click', () => {
+
+                const titleSpan = document.createElement('span');
+                titleSpan.className = 'news-title';
+                titleSpan.textContent = `${index + 1}. ${news.title}`;
+                titleSpan.addEventListener('click', () => {
                     showNewsArticle(news, index + 1);
                 });
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'action-btn';
+                deleteBtn.textContent = '삭제';
+                deleteBtn.addEventListener('click', () => {
+                    deleteNews(index);
+                });
+
+                const editBtn = document.createElement('button');
+                editBtn.className = 'action-btn';
+                editBtn.textContent = '수정';
+                editBtn.addEventListener('click', () => {
+                    editNews(index);
+                });
+
+                li.appendChild(titleSpan);
+                li.appendChild(editBtn);
+                li.appendChild(deleteBtn);
                 newsList.appendChild(li);
             });
         }
@@ -141,6 +181,26 @@
 
             newsListPage.classList.remove('visible');
             newsArticlePage.classList.add('visible');
+        }
+
+        function deleteNews(index) {
+            const savedNews = JSON.parse(localStorage.getItem('newsArray')) || [];
+            savedNews.splice(index, 1);
+            localStorage.setItem('newsArray', JSON.stringify(savedNews));
+            loadNews();
+        }
+
+        function editNews(index) {
+            const savedNews = JSON.parse(localStorage.getItem('newsArray')) || [];
+            const news = savedNews[index];
+            titleInput.value = news.title;
+            contentInput.value = news.content;
+
+            savedNews.splice(index, 1);
+            localStorage.setItem('newsArray', JSON.stringify(savedNews));
+
+            inputPage.classList.add('visible');
+            newsListPage.classList.remove('visible');
         }
 
         window.addEventListener('popstate', (event) => {
