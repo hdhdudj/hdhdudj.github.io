@@ -186,6 +186,39 @@
 		<script src="https://static-nnews.pstatic.net/js/min/20241226/common.min.js"></script>
 	</head>
 	<body class="n_news fs2 as_mp_layout">
+		<div id="countdown"></div>
+
+  <script>
+    // 초기 제한시간(초 단위) 설정: 예제에서는 5분 (300초)로 설정
+    var secondsRemaining = 300;
+
+    // 시간을 HH:MM:SS 형식으로 포맷팅하는 함수
+    function formatTime(seconds) {
+      var hrs = Math.floor(seconds / 3600);
+      var mins = Math.floor((seconds % 3600) / 60);
+      var secs = seconds % 60;
+      return (hrs < 10 ? "0" + hrs : hrs) + ":" +
+             (mins < 10 ? "0" + mins : mins) + ":" +
+             (secs < 10 ? "0" + secs : secs);
+    }
+
+    // 카운트다운을 업데이트하는 함수
+    function updateCountdown() {
+      var display = document.getElementById('countdown');
+      display.textContent = formatTime(secondsRemaining);
+      if (secondsRemaining > 0) {
+        secondsRemaining--;
+      } else {
+        clearInterval(timerInterval);
+        // 타이머 종료 시 추가 작업을 넣을 수 있음.
+      }
+    }
+
+    // 1초마다 updateCountdown 함수 실행
+    var timerInterval = setInterval(updateCountdown, 1000);
+    // 페이지 로드시 바로 한 번 실행해서 초기값 표시
+    updateCountdown();
+  </script>
 		<div class="end_container">
 		<div class="u_skip"><a href="#ct">본문 바로가기</a></div>
 			<header role="banner" class="as_gnb as_type_a" style="padding-top: 45px;">
