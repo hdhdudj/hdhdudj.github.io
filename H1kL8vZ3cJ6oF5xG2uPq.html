@@ -12,40 +12,55 @@
 		<meta name="napp-site-analysis" content="gdid=880000D8_000000000000000015137656,service=news,collection=news,section=100">
 		<meta name="news-article-recently-created" content="true">
 <style>
-  /* 타이머 스타일 수정 */
+  /* 타이머 스타일 최종 수정 */
   #countdown {
     font-size: 48px !important;
     font-family: 'Courier New', Courier, monospace !important;
     text-align: center !important;
-    margin: 0 auto !important;
     padding: 10px !important;
-    width: 80% !important;
+    width: auto !important;
+    min-width: 200px !important;
     max-width: 300px !important;
     background: rgba(0, 0, 0, 0.7) !important;
     color: white !important;
     border-radius: 10px !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
-    z-index: 9999 !important;
+    z-index: 99999 !important;
     position: fixed !important;
     left: 50% !important;
-    top: 10% !important;
+    top: 10px !important;
     transform: translateX(-50%) !important;
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  /* 부모 요소의 영향을 완전히 제거 */
+  body * #countdown {
+    position: fixed !important;
+    left: 50% !important;
+    top: 10px !important;
+    transform: translateX(-50%) !important;
+    margin: 0 !important;
+    padding: 10px !important;
+    display: block !important;
+    visibility: visible !important;
+    z-index: 99999 !important;
   }
 
   /* 반응형 - 작은 화면에서는 글자 크기와 여백 조정 */
   @media (max-width: 600px) {
     #countdown {
       font-size: 32px !important;
-      width: 90% !important;
-      top: 5% !important;
+      max-width: 250px !important;
+      top: 5px !important;
     }
   }
 
   @media (max-width: 400px) {
     #countdown {
       font-size: 28px !important;
-      width: 95% !important;
-      top: 2% !important;
+      max-width: 220px !important;
+      top: 5px !important;
     }
   }
 </style>
