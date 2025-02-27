@@ -55,6 +55,41 @@
       top: 45px !important;
     }
   }
+  /* 다음 버튼 스타일 */
+  .next-button-container {
+    text-align: center;
+    margin-top: 20px;
+    padding-bottom: 30px;
+  }
+
+  .next-button {
+    background-color: #3498db;
+    color: white;
+    font-size: 1.2em;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+  }
+
+  .next-button:hover {
+    background-color: #2980b9;
+  }
+
+  .next-button:active {
+    background-color: #1c5a85;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  /* 반응형 - 작은 화면에서는 버튼 크기 조정 */
+  @media (max-width: 600px) {
+    .next-button {
+      font-size: 1em;
+      padding: 8px 16px;
+    }
+  }
 </style>
 		<title>설문 기사</title>
 			<link rel="stylesheet" href="https://static-nnews.pstatic.net/css/min/20241226/news.css">
@@ -516,6 +551,11 @@
 		</div>
 <div class="_MY_CHANNEL_OFFICE_WRAP pc_hidden" data-grid-template-column-aside="true">
 </div>
+<div class="next-button-container" style="position: relative;bottom: 0px;">
+    <button class="next-button" onclick="goToNextPage()" style="
+    /* z-index: 10000; */
+">다음</button>
+</div>
 	</div>
 </div>
 <div class="media_end_tts_ticker _FADE_LAYER" id="_media_end_tts_ticker" style="display: none;">
@@ -819,6 +859,10 @@
 					$("html").removeClass("DARK_THEME");
 				}
 			});
+
+  function goToNextPage() {
+    window.location.href = "https://hdhdudj.github.io"; // 원하는 링크로 수정
+  }
 		</script>
 	</body>
 </html>
