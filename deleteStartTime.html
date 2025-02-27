@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>타이머 리셋</title>
+</head>
+<body>
+  <h1>타이머가 초기화되었습니다.</h1>
+  <script>
+(function() {
+    var targetKey = "timerStartTime"; // 삭제할 로컬 스토리지 키 이름
+
+    if (localStorage.getItem(targetKey)) {
+        localStorage.removeItem(targetKey);
+        console.log(`[INFO] '${targetKey}' 키가 로컬 스토리지에서 삭제되었습니다.`);
+    } else {
+        console.log(`[INFO] '${targetKey}' 키가 존재하지 않습니다.`);
+    }
+})();
+</script>
+</body>
+</html>
