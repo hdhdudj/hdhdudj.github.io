@@ -14,6 +14,7 @@
 const WEBAPP_BASE = 'https://script.google.com/macros/s/AKfycby-qSeiXWVD1GesvPkF8aBNsktzQ-MNzadA9Ztz4JMr8iVW-L0iWWYaoJOd1i8_-Bfx/exec';
 
 function onClaim(resp){ // JSONP 콜백
+  console.log(resp
   const out = document.getElementById('out');
   if(!resp || !resp.ok){ out.textContent = '오류: '+(resp && resp.error); return; }
   if(resp.already){
