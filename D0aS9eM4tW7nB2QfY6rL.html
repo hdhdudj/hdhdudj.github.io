@@ -4,51 +4,83 @@
 <style>
   body{font-family:sans-serif;max-width:600px;margin:40px auto}
   #out{margin-top:16px;background:#f6f6f6;padding:12px;border-radius:8px;white-space:pre-wrap}
+  .hidden{display:none}
+  .name-badge{padding:6px 10px;border:1px solid #ddd;border-radius:8px;background:#fafafa}
 </style>
 
 <h1>마니또 짝 뽑기</h1>
 
-<label>내 이름: <input id="myName" placeholder="스프레드시트의 이름과 정확히 동일하게 입력"></label>
-<br><br>
-<button id="btn">짝 뽑기</button>
+<!-- 자유 입력 모드(링크에 name 파라미터 없을 때만 보임) -->
+<div id="freeInput">
+  <label>내 이름: <input id="myName" placeholder="스프레드시트의 이름과 동일하게 입력"></label>
+</div>
 
+<!-- 잠금 모드(링크에 name 파라미터가 있을 때만 보임) -->
+<div id="lockedInput" class="hidden">
+  <div>당신의 이름</div>
+  <div class="name-badge" id="lockedName"></div>
+</div>
+
+<br>
+<button id="btn">짝 뽑기</button>
 <pre id="out"></pre>
 
 <script>
-/** Apps Script 웹앱의 exec URL 로 교체하세요 */
+/** Apps Script 웹앱 exec URL 로 교체하세요 */
 const WEBAPP_BASE = 'https://script.google.com/macros/s/AKfycby-qSeiXWVD1GesvPkF8aBNsktzQ-MNzadA9Ztz4JMr8iVW-L0iWWYaoJOd1i8_-Bfx/exec';
+
+/** URL 파라미터 파싱 */
+function getQueryParam(key){
+  const p = new URLSearchParams(location.search);
+  const v = p.get(key);
+  return v ? decodeURIComponent(v) : '';
+}
 
 /** JSONP 콜백 (전역) */
 function onClaim(resp){
   console.log('[onClaim]', resp);
   const out = document.getElementById('out');
   if(!resp){ out.textContent = '응답 없음'; return; }
-  if(!resp.ok){
-    out.textContent = '오류: ' + (resp.error || 'unknown');
-    return;
-  }
+  if(!resp.ok){ out.textContent = '오류: ' + (resp.error || 'unknown'); return; }
   out.textContent = resp.already
     ? `이미 배정됨: ${resp.assigned}`
     : `당신의 마니또는: ${resp.assigned}`;
 }
 
-/** JSONP 로더 (에러 감지 포함) */
+/** JSONP 로더 */
 function loadJsonp(url){
   return new Promise((resolve, reject)=>{
     const s = document.createElement('script');
     s.src = url + '&_=' + Date.now(); // 캐시 버스터
-    s.onload = () => resolve();        // 로드 성공 (콜백은 별도로 실행됨)
+    s.onload = () => resolve();
     s.onerror = () => reject(new Error('JSONP 스크립트 로드 실패(권한/배포/네트워크 확인)'));
     document.body.appendChild(s);
   });
 }
 
+/** 이름 결정: 링크에 ?name= 있으면 잠금 모드 */
+let lockedName = getQueryParam('name'); // 예: https://.../index.html?name=홍길동
+if (lockedName) {
+  // 잠금 모드: 입력칸 숨김, 표시만
+  document.getElementById('freeInput').classList.add('hidden');
+  document.getElementById('lockedInput').classList.remove('hidden');
+  document.getElementById('lockedName').textContent = lockedName;
+} else {
+  // 자유 입력 모드
+  document.getElementById('freeInput').classList.remove('hidden');
+  document.getElementById('lockedInput').classList.add('hidden');
+}
+
 document.getElementById('btn').onclick = async () => {
-  const nameRaw = document.getElementById('myName').value;
-  const myName = (nameRaw || '').trim();
+  // 이름 확정
+  let myName = lockedName;
+  if (!myName) {
+    const input = document.getElementById('myName').value || '';
+    myName = input.trim();
+  }
   if(!myName){ alert('이름을 입력하세요'); return; }
 
-  // UID를 사용자에게 보이지 않게 "이름과 동일"로 사용
+  // UID는 사용자에게 보이지 않게 이름과 동일하게 사용
   const uid = myName;
 
   const url = `${WEBAPP_BASE}?action=claim`
@@ -57,7 +89,7 @@ document.getElementById('btn').onclick = async () => {
             + `&callback=onClaim`;
 
   const out = document.getElementById('out');
-  out.textContent = '요청 중...';
+  out.textContent = '요청 중...\n' + url;
 
   try{
     await loadJsonp(url);
