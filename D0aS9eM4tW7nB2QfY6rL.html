@@ -89,7 +89,7 @@ document.getElementById('btn').onclick = async () => {
             + `&callback=onClaim`;
 
   const out = document.getElementById('out');
-  out.textContent = '요청 중...\n' + url;
+  out.textContent = '요청 중...';
 
   try{
     await loadJsonp(url);
